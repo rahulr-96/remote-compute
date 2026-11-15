@@ -1,0 +1,3 @@
+# Example only. Place on Lenovo in dedicated non-administrator SSH user's authorized_keys.
+# Replace the public key with the Acer's actual public key.
+command="powershell.exe -NoProfile -NonInteractive -ExecutionPolicy RemoteSigned -File C:\\RemoteCompute\\Wake-Desktop.ps1",no-port-forwarding,no-agent-forwarding,no-X11-forwarding ssh-ed25519 REPLACE_WITH_ACER_PUBLIC_KEY remote-compute-client
