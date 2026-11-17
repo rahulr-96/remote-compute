@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Net.Sockets;
 
 namespace RemoteCompute.Client;
@@ -44,7 +45,7 @@ public sealed class LaunchCoordinator(AppSettings settings)
         if (!File.Exists(exe)) throw new FileNotFoundException("Application not found", exe);
         var info = new ProcessStartInfo(exe) { UseShellExecute = false };
         if (args is not null) foreach (var arg in args) info.ArgumentList.Add(arg);
-        Process.Start(info) ?? throw new InvalidOperationException($"Could not start {exe}");
+        _ = Process.Start(info) ?? throw new InvalidOperationException($"Could not start {exe}");
     }
 
     private static async Task RunAsync(string exe, IEnumerable<string> args, CancellationToken token)
