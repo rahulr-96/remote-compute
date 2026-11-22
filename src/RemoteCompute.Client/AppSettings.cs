@@ -12,12 +12,45 @@ public sealed record AppSettings(
     string VscodePath,
     string VscodeSshHost)
 {
+    private static string ConnectionPath => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "RemoteCompute", "connection.json");
+
+    internal sealed record ConnectionSettings(string RelaySshTarget, string DesktopTailscaleIp);
+
+    internal static void SaveConnection(ConnectionSettings connection)
+    {
+        var path = ConnectionPath;
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        var temporaryPath = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        try
+        {
+            File.WriteAllText(temporaryPath, JsonSerializer.Serialize(connection));
+            File.Move(temporaryPath, path, overwrite: true);
+        }
+        finally
+        {
+            File.Delete(temporaryPath);
+        }
+    }
+
     public static AppSettings Load()
     {
         var path = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
         var settings = JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(path),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
             ?? throw new InvalidDataException("appsettings.json is empty");
+
+        if (File.Exists(ConnectionPath))
+        {
+            var connection = JsonSerializer.Deserialize<ConnectionSettings>(File.ReadAllText(ConnectionPath))
+                ?? throw new InvalidDataException("Connection settings are empty.");
+            settings = settings with
+            {
+                RelaySshTarget = connection.RelaySshTarget,
+                DesktopTailscaleIp = connection.DesktopTailscaleIp
+            };
+        }
 
         if (string.IsNullOrWhiteSpace(settings.RelaySshTarget) ||
             string.IsNullOrWhiteSpace(settings.DesktopTailscaleIp) ||
