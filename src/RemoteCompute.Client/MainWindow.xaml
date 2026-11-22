@@ -11,6 +11,8 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <TextBlock FontSize="26" FontWeight="SemiBold" Text="Remote Compute" />
+    <Button x:Name="SettingsButton" Content="Settings" HorizontalAlignment="Right"
+            Width="80" Height="30" Click="Settings_Click" />
     <TextBlock Grid.Row="1" Margin="0,8,0,20" Foreground="Gray" Text="Wake your desktop, then open your workspace." />
     <StackPanel Grid.Row="2" Orientation="Horizontal">
       <Button x:Name="GamingButton" Content="🎮  Play Games" Width="185" Height="48" Margin="0,0,12,0" Click="Gaming_Click" />

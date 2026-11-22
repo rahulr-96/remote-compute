@@ -8,6 +8,13 @@ public partial class MainWindow : Window
 
     public MainWindow() => InitializeComponent();
 
+    private void Settings_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new SettingsWindow { Owner = this };
+        if (window.ShowDialog() == true)
+            StatusText.Text = "Connection settings saved.";
+    }
+
     private async void Gaming_Click(object sender, RoutedEventArgs e) => await LaunchAsync(true);
     private async void Coding_Click(object sender, RoutedEventArgs e) => await LaunchAsync(false);
 
@@ -15,7 +22,7 @@ public partial class MainWindow : Window
     {
         if (_running is not null) return;
         _running = new CancellationTokenSource();
-        GamingButton.IsEnabled = CodeButton.IsEnabled = false;
+        SettingsButton.IsEnabled = GamingButton.IsEnabled = CodeButton.IsEnabled = false;
         CancelButton.IsEnabled = true;
         try
         {
@@ -28,7 +35,7 @@ public partial class MainWindow : Window
         {
             _running.Dispose();
             _running = null;
-            GamingButton.IsEnabled = CodeButton.IsEnabled = true;
+            SettingsButton.IsEnabled = GamingButton.IsEnabled = CodeButton.IsEnabled = true;
             CancelButton.IsEnabled = false;
         }
     }
